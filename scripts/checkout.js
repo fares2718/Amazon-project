@@ -1,4 +1,4 @@
-import { cart, removeFromCart } from '../data/cart.js';
+import { cart, removeFromCart, updateDeliveryDate } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
@@ -92,13 +92,15 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
   const formatStr = "dddd, MMMM D";
   deliveryOptions.forEach((deliveryOption) => {
     const deliveryPrice = deliveryOption.deliveryPriceCents === 0 ?
-      "FREE" : formatCurrency(deliveryOption.deliveryPriceCents);
+      "FREE" : formatCurrency(deliveryOption.deliveryPriceCents).toString();
     const deliveryDate = dayjs()
       .add(deliveryOption.deliveryDays, "days")
       .format(formatStr);
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
     deliveryOptionsHtml += `
-            <div class="delivery-option">
+            <div class="delivery-option js-delivery-option"
+            data-product-id="${matchingProduct.id}"
+            data-deliver-option-id="${deliveryOption.id}">
             <input type="radio"
               ${isChecked ? "checked" : ""}
               class="delivery-option-input"
@@ -115,3 +117,11 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
   })
   return deliveryOptionsHtml;
 }
+
+document.querySelectorAll(".js-delivery-option")
+  .forEach((ele) => {
+    ele.addEventListener("click", () => {
+      const { productId, deliveryOptionId } = ele.dataset;
+      updateDeliveryDate(productId, deliveryOptionId);
+    });
+  });
