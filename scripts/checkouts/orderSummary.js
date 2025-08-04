@@ -1,9 +1,13 @@
-import { cart, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
+// import { cart, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
 import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import { deliveryOptions, getDeliveryOption } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
+import Cart from '../../data/clsCart.js';
+
+let cartObj = new Cart("cart");
+let cart = cartObj.getCarItems();
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
@@ -137,7 +141,7 @@ export function renderOrderSummary() {
     .forEach((element) => {
       element.addEventListener('click', () => {
         const { productId, deliveryOptionId } = element.dataset;
-        updateDeliveryOption(productId, deliveryOptionId);
+        cartObj.updateDeliveryOption(productId, deliveryOptionId);
         renderOrderSummary();
         renderPaymentSummary();
       });
