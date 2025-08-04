@@ -78,3 +78,5 @@ function Cart(localStorageKey) {
 
 const cart = Cart('cart-oop');
 cart.loadFromStorage();
+
+
